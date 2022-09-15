@@ -273,10 +273,14 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 	tm.block<3, 1>(0, 0) = rx;
 	tm.block<3, 1>(0, 1) = ry;
 	tm.block<3, 1>(0, 2) = rz;
+	Eigen::Matrix3d R;
+	R.block<3, 1>(0, 0) = rx;
+	R.block<3, 1>(0, 1) = ry;
+	R.block<3, 1>(0, 2) = rz;
 	// the translation is given by the difference in the transformed source
 	// centroid and the target centroid
 	//tm.SetT(tCp - tm*sCp);
-	tm.block<3, 1>(0, 3) = tCp - tm * sCp;
+	tm.block<3, 1>(0, 3) = (tCp - R * sCp);
 
 	return tm;
 }
@@ -343,8 +347,10 @@ bool KyGeoICP::TransformSource(const Eigen::Matrix4d& tm)
 {	
 	//KyStdArray<Eigen::Vector3d>::iterator sit;
 	std::vector<Eigen::Vector3d>::iterator sit;
+	Eigen::Matrix3d R = tm.block<3, 3>(0, 0);
 	for (sit = m_Source.begin(); sit != m_Source.end(); sit++) {		
-		(*sit) =  tm*(*sit);
+		//(*sit) =  tm*(*sit);
+		(*sit) = R * (*sit);
 	}
 	return true;
 }

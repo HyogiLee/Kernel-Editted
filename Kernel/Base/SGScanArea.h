@@ -59,18 +59,18 @@ public:
 
 	//GRID
 	
-	void MakeGrid(vector<Eigen::Vector3d>* ptsScan, double vSize=0);
+	void MakeGrid(std::vector<Eigen::Vector3d>* ptsScan, double vSize=0);
 
 	//�߰��� ���� ���Ͽ� ���� ���� ������Ʈ
-    void UpdateGrid(vector<Eigen::Vector3d>* ptsScan,std::vector<float>& rgbs);
-    void CalcBoundingBox(vector<Eigen::Vector3d>* ptsScan);
+    void UpdateGrid(std::vector<Eigen::Vector3d>* ptsScan,std::vector<float>& rgbs);
+    void CalcBoundingBox(std::vector<Eigen::Vector3d>* ptsScan);
 	void MakeMainGrid(double vSize=0);
 	void MakeSubGrid();
 	void DeleteGrid();
 	void InitGridPtsList();
-    void MakeScanPoint(vector<Eigen::Vector3d>* ptsScan,
+    void MakeScanPoint(std::vector<Eigen::Vector3d>* ptsScan,
                            std::vector<float>& rgbs);
-    void SetScanPtsToGrid(vector<Eigen::Vector3d>* pScanPts);
+    void SetScanPtsToGrid(std::vector<Eigen::Vector3d>* pScanPts);
     void GetPos(Eigen::Vector3d* pt, int& nx, int& ny, int& nz);
 	void AddToGrid();
     void AddToGrid(Eigen::Vector3d* pSP);
@@ -84,10 +84,10 @@ public:
     void CalcBoundingBoxUsingPts(std::vector<Eigen::Vector3d*>& pScanPts);
     V3D GetBoundingBox(CSGScanAreaAttrib* pArea, int nStep);
     static void GetPartialScanPts(CSGScanAreaAttrib* pArea,
-                                              vector<Eigen::Vector3d>* pts,
+		std::vector<Eigen::Vector3d>* pts,
                                               int nStep); 
 	static void GetPartialGridScanPts(CScanGrid* pGrid,
-                                      vector<Eigen::Vector3d>* pts,
+		std::vector<Eigen::Vector3d>* pts,
                                       int nStep);
     public:	
 	BOOL CalcBV();

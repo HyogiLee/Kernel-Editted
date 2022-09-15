@@ -111,14 +111,14 @@ BOOL CSGScanAreaAttrib::CalcBV()
 	int nStep = int(m_NPts / 100000);
 	if (nStep < 1) nStep = 1;
 
-	vector<Eigen::Vector3d> pts;
+	std::vector<Eigen::Vector3d> pts;
 	m_BV = GetBoundingBox(this, nStep);
 
 	//m_bValidBV = TRUE;
 	return TRUE;
 }
 
-void CSGScanAreaAttrib::MakeGrid(vector<Eigen::Vector3d>* ptsScan, double vSize)
+void CSGScanAreaAttrib::MakeGrid(std::vector<Eigen::Vector3d>* ptsScan, double vSize)
 {
 	if (m_pGrid)
 		return;
@@ -141,7 +141,7 @@ void CSGScanAreaAttrib::MakeGrid(vector<Eigen::Vector3d>* ptsScan, double vSize)
 	CalcBV();
 }
 
-void CSGScanAreaAttrib::UpdateGrid(vector<Eigen::Vector3d>* ptsScan, std::vector<float>& rgbs) 
+void CSGScanAreaAttrib::UpdateGrid(std::vector<Eigen::Vector3d>* ptsScan, std::vector<float>& rgbs)
 {
 	
 	m_NPts = (int)ptsScan->size();
@@ -177,7 +177,7 @@ void CSGScanAreaAttrib::UpdateGrid(vector<Eigen::Vector3d>* ptsScan, std::vector
 	UpdateGridPtsData();
 }
 
-void CSGScanAreaAttrib::MakeScanPoint(vector<Eigen::Vector3d>* ptsScan, std::vector<float>& rgbs) 
+void CSGScanAreaAttrib::MakeScanPoint(std::vector<Eigen::Vector3d>* ptsScan, std::vector<float>& rgbs)
 {
     int size = ptsScan->size();
     for (int i = 0; i < size; i++)
@@ -204,7 +204,7 @@ void CSGScanAreaAttrib::MakeScanPoint(vector<Eigen::Vector3d>* ptsScan, std::vec
 	}
 }
 
-void CSGScanAreaAttrib::SetScanPtsToGrid(vector<Eigen::Vector3d>* pScanPts) 
+void CSGScanAreaAttrib::SetScanPtsToGrid(std::vector<Eigen::Vector3d>* pScanPts)
 {
     int size = (int)pScanPts->size();
 	for (int i = 0; i < size; i++)
@@ -374,7 +374,7 @@ void CSGScanAreaAttrib::MakeMainGrid(double vSize)
 }
 
 
-void CSGScanAreaAttrib::CalcBoundingBox(vector<Eigen::Vector3d>* ptsScan) 
+void CSGScanAreaAttrib::CalcBoundingBox(std::vector<Eigen::Vector3d>* ptsScan)
 {
 	//m_Box.Init();
     int size = ptsScan->size();
@@ -389,7 +389,7 @@ void CSGScanAreaAttrib::CalcBoundingBox(vector<Eigen::Vector3d>* ptsScan)
 	m_Box.Expand((float)(m_MaxLen / 1000));
 }
 
-void CSGScanAreaAttrib::GetPartialScanPts(CSGScanAreaAttrib* pArea,vector<Eigen::Vector3d>* pts,int nStep) 
+void CSGScanAreaAttrib::GetPartialScanPts(CSGScanAreaAttrib* pArea,std::vector<Eigen::Vector3d>* pts,int nStep) 
 {
     if (pArea->GetNPts() == 0) return;
 
@@ -439,7 +439,7 @@ void CSGScanAreaAttrib::GetPartialScanPts(CSGScanAreaAttrib* pArea,vector<Eigen:
 }
 
 void CSGScanAreaAttrib::GetPartialGridScanPts(CScanGrid* pGrid,
-                                              vector<Eigen::Vector3d>* pts,
+	std::vector<Eigen::Vector3d>* pts,
                                               int nStep) 
 {
     int nx = pGrid->GetNX();
@@ -476,7 +476,7 @@ void CSGScanAreaAttrib::CalcBoundingBoxUsingAllPts()
 	int nStep = int(sqrt(val));
 	if (nStep < 1) nStep = 1;
 
-	vector<Eigen::Vector3d> pts;
+	std::vector<Eigen::Vector3d> pts;
 	GetPartialScanPts(this, &pts, nStep);
 	for (int i = 0; i < (int)pts.size(); i++)
 		m_Box.Update(pts[i]);

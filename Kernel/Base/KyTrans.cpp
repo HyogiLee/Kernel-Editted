@@ -1192,7 +1192,7 @@ Eigen::Matrix4d KyTrans::GetMatrixToPipeForB(Eigen::Vector3d Pt1, Eigen::Vector3
 	//tRot.MakeIdentity();
 	//tRot.RotateX(dAng*minCnt);
 	tRot.setIdentity();
-	Eigen::Affine3d rx = Eigen::Affine3d(Eigen::AngleAxisd(KyMath::Radian(dAng * minCnt), Eigen::Vector3d(1, 0, 0)));
+	rx = Eigen::Affine3d(Eigen::AngleAxisd(KyMath::Radian(dAng * minCnt), Eigen::Vector3d(1, 0, 0)));
 	tRot = rx.matrix();
 
 
