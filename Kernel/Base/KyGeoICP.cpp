@@ -53,14 +53,16 @@ bool KyGeoICP::GetRigidTM(Eigen::Matrix4d& tm, const int& iter, const double& to
 	//m_RigidTM.MakeIdentity();
 	m_RigidTM.Identity();
 	for (int i = 0; i < iter; i++) {
-		tm.MakeIdentity();
+		//tm.MakeIdentity();
+		tm.Identity();
 		tm = CalcRigidTM(bMappingFixX,bMappingFixY,bMappingFixZ);	
 		TransformSource(tm);
 		error1 = EstiError(errorMetric);
 		if (error0 < error1) {// 
 			if (i > 0)
 				improved = true;
-			Eigen::Matrix4d inverseM = tm.InverseM();
+			//Eigen::Matrix4d inverseM = tm.InverseM();
+			Eigen::Matrix4d inverseM = tm.inverse();
 			TransformSource(inverseM);
 			break;
 		}
@@ -87,14 +89,15 @@ bool KyGeoICP::GetRigidTM(Eigen::Matrix4d& tm, const int& iter, const double& to
 Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappingFixY /*= false*/,	bool bMappingFixZ /*= false*/) const
 { 
 	Eigen::Matrix4d tm;
-	tm.MakeIdentity();
-
+	//tm.MakeIdentity();
+	tm.Identity();
 	int count = (int)m_Source.size();
 	if(count == 0)
 		return tm;
 
 	Eigen::Vector3d sCp, tCp;
 	sCp = tCp = KY_ORIGIN;
+	sCp = tCp = { 0,0,0 };
 	int i;
 	for (i = 0; i < count; i++) {
 		sCp += m_Source[i];
@@ -119,8 +122,10 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 		}
 	}
 
-	KyStdArray<Eigen::Vector3d>::const_iterator sit;
-	KyStdArray<Eigen::Vector3d>::const_iterator tit;
+	//KyStdArray<Eigen::Vector3d>::const_iterator sit;
+	//KyStdArray<Eigen::Vector3d>::const_iterator tit;
+	std::vector<Eigen::Vector3d>::const_iterator sit;
+	std::vector<Eigen::Vector3d>::const_iterator tit;
 	Eigen::Vector3d a, b;
 	for (sit = m_Source.begin(), tit = m_Target.begin(); 
 		 sit != m_Source.end() && tit != m_Target.end(); 
@@ -134,11 +139,11 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 
 		//���� ���� : ������ ����
 		if(bMappingFixX)
-			a.x = b.x = 0.;
+			a.x() = b.x() = 0.;
 		if(bMappingFixY)
-			a.y = b.y = 0.;
+			a.y() = b.y() = 0.;
 		if(bMappingFixZ)
-			a.z = b.z = 0.;
+			a.z() = b.z() = 0.;
 
 		// accumulate the products a*T(b) into the matrix M
 		for (i = 0; i < 3; i++) {
@@ -197,10 +202,11 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 		Eigen::Vector3d dt = t1 - t0;
 		double rs = ds.Size();
 		double rt = dt.Size();
+		
+		ds.normalized();
+		dt.normalized();
 
-		ds.Normalize();
-		dt.Normalize();
-	
+
 		  // take dot & cross product
 		w = ds[0]*dt[0] + ds[1]*dt[1] + ds[2]*dt[2];
 		x = ds[1]*dt[2] - ds[2]*dt[1];
@@ -320,7 +326,8 @@ void KyGeoICP::Perpendiculars(const Eigen::Vector3d& v0,
 
 bool KyGeoICP::TransformSource(const Eigen::Matrix4d& tm)
 {	
-	KyStdArray<Eigen::Vector3d>::iterator sit;
+	//KyStdArray<Eigen::Vector3d>::iterator sit;
+	std::vector<Eigen::Vector3d>::iterator sit;
 	for (sit = m_Source.begin(); sit != m_Source.end(); sit++) {		
 		(*sit) =  tm*(*sit);
 	}
@@ -330,17 +337,21 @@ bool KyGeoICP::TransformSource(const Eigen::Matrix4d& tm)
 
 double KyGeoICP::EstiError(bool mode)
 {
-	KyStdArray<Eigen::Vector3d>::const_iterator sit;
-	KyStdArray<Eigen::Vector3d>::const_iterator tit;
+	//KyStdArray<Eigen::Vector3d>::const_iterator sit;
+	//KyStdArray<Eigen::Vector3d>::const_iterator tit;
+	std::vector<Eigen::Vector3d>::const_iterator sit;
+	std::vector<Eigen::Vector3d>::const_iterator tit;
+
 	double totalDist = 0.;
 	double meanDist = 0.;
 	for (sit = m_Source.begin(), tit = m_Target.begin(); 
 		 sit != m_Source.end() && tit != m_Target.end(); 
 		 sit++, tit++) {		
 		if (mode) // RMS
-			totalDist += (*sit).Dist(*tit) * (*sit).Dist(*tit); 
+			//totalDist += (*sit).Dist(*tit) * (*sit).Dist(*tit); 
+			totalDist += KyMath::Dist((*sit), (*tit)) * KyMath::Dist((*sit), (*tit));
 		else
-			totalDist += sqrt( (*sit).Dist(*tit) ); 
+			totalDist += sqrt(KyMath::Dist((*sit), (*tit)));
 	}
 
 	if (mode) // RMS

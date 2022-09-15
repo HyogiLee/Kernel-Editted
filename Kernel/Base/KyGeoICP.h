@@ -1,5 +1,6 @@
 #pragma once
 #include "open3d/Open3D.h"
+#include "KyMath.h"
 //#include <KyBase/KyBaseExportDll.h>
 //#include <KyBase/KyVARRAY.h>
 //#include <KyBase/KyTMatrix.h>
