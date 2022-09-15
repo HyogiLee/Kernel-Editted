@@ -25,19 +25,25 @@ KyTrans::~KyTrans(void)
 
 void KyTrans::UpdatePoint(std::vector<Eigen::Vector3d>& pts, Eigen::Matrix4d& tMat)
 {
-	for(size_t i=0; i<pts.size(); i++)
-		pts[i] = tMat * pts[i];
+	for (size_t i = 0; i < pts.size(); i++) {
+		Eigen::Matrix3d R = tMat.block<3, 3>(0, 0);
+		//pts[i] = tMat * pts[i];
+		pts[i] = R * pts[i];
+	}
 }
 
 void KyTrans::UpdatePoint(std::vector<Eigen::Vector3f>& pts, Eigen::Matrix4f& tMat)
 {
-	for (size_t i = 0; i < pts.size(); i++)
-		pts[i] = tMat * pts[i];
+	for (size_t i = 0; i < pts.size(); i++) {
+		Eigen::Matrix3d R = tMat.block<3, 3>(0, 0);
+		//pts[i] = tMat * pts[i];
+		pts[i] = R * pts[i];
+	}
 }
 
 Eigen::Matrix4d KyTrans::MovePtsNtoN(std::vector<Eigen::Vector3d>& source, std::vector<Eigen::Vector3d>& target,bool bSrcMove)
 {
-	m_tMat.Identity();
+	m_tMat.setIdentity();
 	if(source.size() != target.size())
 		return m_tMat;
 	if(source.size() < 1)
@@ -53,8 +59,12 @@ Eigen::Matrix4d KyTrans::MovePtsNtoN(std::vector<Eigen::Vector3d>& source, std::
 	m_icp.GetRigidTM(m_tMat,100,0.001,true,m_bMappingFixX,m_bMappingFixY,m_bMappingFixZ);
 
 	std::vector<Eigen::Vector3d> newSource = source;
-	for(size_t i=0; i<source.size(); i++)
-		newSource[i] = m_tMat*source[i];
+	for (size_t i = 0; i < source.size(); i++) {
+		//newSource[i] = m_tMat * source[i];
+		Eigen::Matrix3d R = m_tMat.block<3, 3>(0, 0);
+		//pts[i] = tMat * pts[i];
+		newSource[i] = R * source[i];
+	}
 
 	if(bSrcMove)
 		source = newSource;
@@ -84,12 +94,12 @@ double KyTrans::GetRmsError()
 	if(N == 0)
 		return -1.;
 
-	for(unsigned int i=0; i<m_errDx.size(); i++)
-		eTol += m_errDx[i]*m_errDx[i];
-	for(unsigned int i=0; i<m_errDy.size(); i++)
-		eTol += m_errDy[i]*m_errDy[i];
-	for(unsigned int i=0; i<m_errDz.size(); i++)
-		eTol += m_errDz[i]*m_errDz[i];
+	for(unsigned int i=0; i < m_errDx.size(); i++)
+		eTol += m_errDx[i] * m_errDx[i];
+	for(unsigned int i=0; i < m_errDy.size(); i++)
+		eTol += m_errDy[i] * m_errDy[i];
+	for(unsigned int i=0; i < m_errDz.size(); i++)
+		eTol += m_errDz[i] * m_errDz[i];
 
 	return sqrt(eTol/N);
 }
@@ -1083,8 +1093,9 @@ Eigen::Matrix4d KyTrans::MovePtsBy4PtsWithXAxis(Eigen::Vector3d ptSt1, Eigen::Ve
 void KyTrans::MovePts(Eigen::Matrix4d tMat, std::vector<Eigen::Vector3d>& arrPts)
 {
 	for(size_t i=0; i<arrPts.size(); i++)
-	{
-		arrPts[i] = tMat*arrPts[i];
+	{		
+		//arrPts[i] = tMat*arrPts[i];
+		arrPts[i] = (tMat.block<3, 3>(0, 0)) *arrPts[i];
 	}
 }
 
@@ -1093,7 +1104,8 @@ void KyTrans::MovePts(Eigen::Matrix4d tMat, std::vector<std::vector<Eigen::Vecto
 	for (size_t i = 0; i < arrPtss.size(); i++)
 	{
 		for(size_t j=0; j<arrPtss[i].size(); j++)
-			arrPtss[i][j] = tMat * arrPtss[i][j];
+			//arrPtss[i][j] = tMat * arrPtss[i][j];
+			arrPtss[i][j] = (tMat.block<3, 3>(0, 0)) * arrPtss[i][j];
 	}
 }
 
@@ -1102,7 +1114,8 @@ void KyTrans::MovePts(Eigen::Matrix4d tMat, std::vector<Eigen::Vector3f>& arrPts
 {
 	for (size_t i = 0; i < arrPts.size(); i++)
 	{
-		arrPts[i] = tMat*arrPts[i];
+		//arrPts[i] = tMat*arrPts[i];
+		arrPts[i] = (tMat.block<3, 3>(0, 0)) *arrPts[i];
 	}
 }
 

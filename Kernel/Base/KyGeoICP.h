@@ -42,7 +42,7 @@ public:
 private:
 	std::vector<Eigen::Vector3d> m_Source;
 	std::vector<Eigen::Vector3d> m_Target;
-	double m_Error;
+	double m_Error=0.0;
 
 	Eigen::Matrix4d  m_RigidTM;
 };
