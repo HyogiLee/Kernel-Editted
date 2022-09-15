@@ -855,15 +855,21 @@ Eigen::Matrix4d KyTrans::GetMatrix3PtsCoord(Eigen::Vector3d ptOrg, Eigen::Vector
 	vZ = (vX.cross(vY)).normalized();
 	vY = vZ.cross(vX);
 
-
 	Eigen::Matrix4d tMat;
-	tMat.SetX(vX);
-	tMat.SetY(vY);
-	tMat.SetZ(vZ);
+	//tMat.SetX(vX);
+	//tMat.SetY(vY);
+	//tMat.SetZ(vZ);
+	tMat.setIdentity();
+	tMat.block<3, 1>(0, 0) = vX;
+	tMat.block<3, 1>(0, 1) = vY;
+	tMat.block<3, 1>(0, 2) = vZ;
 
 	Eigen::Vector3d v0 = ptOrg;
-	tMat.SetT(v0);
-	return tMat.InverseM();
+	//tMat.SetT(v0);
+	tMat.block<3, 1>(0, 3) = v0;
+
+	//return tMat.InverseM();
+	return tMat.inverse();
 }
 
 Eigen::Matrix4d KyTrans::MovePtsBy3PtsCord(Eigen::Vector3d ptOrg, Eigen::Vector3d ptX, Eigen::Vector3d ptXY)

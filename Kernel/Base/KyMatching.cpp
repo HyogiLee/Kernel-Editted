@@ -152,20 +152,20 @@ void KyAutoMatch::with_Constraint_doit()
 {
 	// Function call for constrained matching
 
-	// nBase: Á¤±Ô µ¥ÀÌÅ¸ÀÇ °¹¼ö
-	// bIndex: Á¤±Ô µ¥ÀÌÅ¸ÀÇ ÀÎµ¦½º
-	// bData: Á¤±Ô µ¥ÀÌÅ¸ Æ÷ÀÎÆ®
-	// nMeasured: °èÃø µ¥ÀÌÅ¸ÀÇ °¹¼ö
-	// mIndex: °èÃø µ¥ÀÌÅ¸ÀÇ ÀÎµ¦½º
-	// mData: °èÃø µ¥ÀÌÅ¸ Æ÷ÀÎÆ®
-	// nconstraint: constraintÀÇ °¹¼ö
-	// cIndex: ±¸¼ÓÁ¶°ÇÀÌ ºÎ¿©µÇ´Â Á¡µéÀÇ ÀÎµ¦½º
-	// cLevel: ±¸¼Ó Á¶°ÇÀÇ ·¹º§
-	// nfiltered: Á¤ÇÕµÈ Á¡µéÀÇ °¹¼ö (ÇÊÅÍ¸µÀÌ µÈ ÀÌÈÄÀÇ Á¡ÀÇ °¹¼ö)
-	// oTransformed: Á¤ÇÕµÈ °èÃø Á¡. »õ·Î¿î º¯È¯ Á¡µéÀº ÇÔ¼ö°ªÀ¸·Î µ¹·Á ¹Þ´Â´Ù
-	// filteringIndex: °¢ °èÃø°ª°ú ¸ÅÄªµÇ´Â Á¤±Ô°ªÀÇ ÀÎµ¦½º
-	// dist: °¢ ´ëÀÀ Á¡µé°£ÀÇ ÃÖ¼Ò °Å¸®
-	// filteredYN: ÇÊÅÍ¸µ ¿©ºÎ
+	// nBase: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// bIndex: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½
+	// bData: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½Æ®
+	// nMeasured: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// mIndex: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½
+	// mData: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½Æ®
+	// nconstraint: constraintï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// cIndex: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¿ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½
+	// cLevel: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// nfiltered: ï¿½ï¿½ï¿½Õµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+	// oTransformed: ï¿½ï¿½ï¿½Õµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½. ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Þ´Â´ï¿½
+	// filteringIndex: ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Äªï¿½Ç´ï¿½ ï¿½ï¿½ï¿½Ô°ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½
+	// dist: ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é°£ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½Å¸ï¿½
+	// filteredYN: ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 
 	int indexMax;
@@ -232,18 +232,18 @@ void KyAutoMatch::with_Filter_doit(bool bRotateZ)
 {
 	int indexMax;
 	double subdelta;
-	//ÀÚµ¿Á¤ÇÕ with filtering¸ðµâ ÇÔ¼ö È£Ãâ
-	// nBase: Á¤±Ô µ¥ÀÌÅ¸ÀÇ °¹¼ö
-	// bIndex: Á¤±Ô µ¥ÀÌÅ¸ÀÇ ÀÎµ¦½º
-	// bData: Á¤±Ô µ¥ÀÌÅ¸ Æ÷ÀÎÆ®
-	// nMeasured: °èÃø µ¥ÀÌÅ¸ÀÇ °¹¼ö
-	// mIndex: °èÃø µ¥ÀÌÅ¸ÀÇ ÀÎµ¦½º
-	// mData: °èÃø µ¥ÀÌÅ¸ Æ÷ÀÎÆ®
-	// nfiltered: Á¤ÇÕµÈ Á¡µéÀÇ °¹¼ö (ÇÊÅÍ¸µÀÌ µÈ ÀÌÈÄÀÇ Á¡ÀÇ °¹¼ö)
-	// oTransformed: Á¤ÇÕµÈ °èÃø Á¡
-	// filteringIndex: °¢ °èÃø°ª°ú ¸ÅÄªµÇ´Â Á¤±Ô°ªÀÇ ÀÎµ¦½º
-	// dist: °¢ ´ëÀÀ Á¡µé°£ÀÇ ÃÖ¼Ò °Å¸®
-	// filteredYN: ÇÊÅÍ¸µ ¿©ºÎ
+	//ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ with filteringï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ È£ï¿½ï¿½
+	// nBase: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// bIndex: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½
+	// bData: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½Æ®
+	// nMeasured: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// mIndex: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½
+	// mData: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½Æ®
+	// nfiltered: ï¿½ï¿½ï¿½Õµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+	// oTransformed: ï¿½ï¿½ï¿½Õµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+	// filteringIndex: ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Äªï¿½Ç´ï¿½ ï¿½ï¿½ï¿½Ô°ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½
+	// dist: ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é°£ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½Å¸ï¿½
+	// filteredYN: ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	double *dist = (double *)malloc(sizeof(double)*(m_nMeasured));
 	double *distBackup = (double *)malloc(sizeof(double)*(m_nMeasured));
@@ -672,7 +672,7 @@ void with_Filtering(int nNormal,int *normalIndex,double **normalXYZ,
   }
 
 
-  //  [12/13/2011 KKY] - Áß½ÉÀÌµ¿
+  //  [12/13/2011 KKY] - ï¿½ß½ï¿½ï¿½Ìµï¿½
 //   double** currData = (double**) malloc(sizeof(double*)*(nMeasured+1));
 //   for(i=0;i<nMeasured;i++) 
 // 	  currData[i]=(double*) malloc(sizeof(double)*3);
@@ -700,7 +700,7 @@ void with_Filtering(int nNormal,int *normalIndex,double **normalXYZ,
 // 			  minPos = k;
 // 			}
 // 
-// 			//¼³°è Æ÷ÀÎÆ®·Î °èÃø µ¥ÀÌÅÍ ÀÌµ¿
+// 			//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
 // 			if(k < nBase)
 // 			{
 // 				for(i=0;i<nMeasured;i++) 
@@ -726,7 +726,7 @@ void with_Filtering(int nNormal,int *normalIndex,double **normalXYZ,
 
   change_InitialPosition(min_px,min_py,min_pz,nMeasured,mData,mRotatedData);
 
-//   //  [12/13/2011 KKY] - Áß½ÉÀÌµ¿
+//   //  [12/13/2011 KKY] - ï¿½ß½ï¿½ï¿½Ìµï¿½
 //   if(minPos != 0)
 //   {
 // 	  for(i=0;i<nMeasured;i++) 
@@ -749,9 +749,9 @@ void with_Filtering(int nNormal,int *normalIndex,double **normalXYZ,
     transformedXYZ[i][1] = mRotatedData[i][1];
     transformedXYZ[i][2] = mRotatedData[i][2];
   }
-  /* ÇÊÅÍ¸µ µÇ´Â µ¥ÀÌÅ¸¸¦ ¾ø¾Ú*/
+  /* ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½*/
   deleteFilteredData(measuredIndex,nfiltered,filteringindex,transformedXYZ,distData,filteredYN);
-  updateCorres(bData,nBase,mRotatedData,nMeasured,distData,filteringindex,delta,filteredYN);	/* Ãß°¡ºÎºÐ 10/2/2007 */
+  updateCorres(bData,nBase,mRotatedData,nMeasured,distData,filteringindex,delta,filteredYN);	/* ï¿½ß°ï¿½ï¿½Îºï¿½ 10/2/2007 */
   
   /* Free memory */
   for(i=0;i<nMeasured;i++) {
@@ -770,7 +770,7 @@ void with_Filtering(int nNormal,int *normalIndex,double **normalXYZ,
 }
 
 
-/* Ãß°¡µÈ ÇÔ¼ö 10/2/2007 */
+/* ï¿½ß°ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ 10/2/2007 */
 void updateCorres(double **bD,int nB,double **mR,int nM,double *mD,int *mC, double delta, bool useFileter)
 {
   int i,j;
@@ -1626,17 +1626,19 @@ void eigsrt(double d[5], double v[5][5], int n)
 }
 
 #define NRANSI
-#include <KyBase/KyNrutil.h>
+//#include <KyBase/KyNrutil.h>
 #define ROTATE(a,i,j,k,l) g=a[i][j];h=a[k][l];a[i][j]=g-s*(h+g*tau);\
 	a[k][l]=h+s*(g-h*tau);
 
 void jacobi(double a[5][5], int n, double d[5], double v[5][5], int *nrot)
 {
   int j,iq,ip,i;
-  double tresh,theta,tau,t,sm,s,h,g,c,*b,*z;
-  
-  b=vector(1,n);
-  z=vector(1,n);
+  double tresh, theta, tau, t, sm, s, h, g, c;
+  //double * b, * z;
+  //b=vector(1,n);
+  //z=vector(1,n);
+  Eigen::VectorXd b(1, n);
+  Eigen::VectorXd z(1, n);
   for (ip=1;ip<=n;ip++) {
     for (iq=1;iq<=n;iq++) v[ip][iq]=0.0;
     v[ip][ip]=1.0;
@@ -1653,8 +1655,8 @@ void jacobi(double a[5][5], int n, double d[5], double v[5][5], int *nrot)
 	sm += fabs(a[ip][iq]);
     }
     if (fabs(sm) < 0.01) {
-      free_vector(z,1,n);
-      free_vector(b,1,n);
+      //free_vector(z,1,n);
+      //free_vector(b,1,n);
       return;
     }
     if (i < 4)
@@ -1707,7 +1709,7 @@ void jacobi(double a[5][5], int n, double d[5], double v[5][5], int *nrot)
       z[ip]=0.0;
     }
   }
-  nrerror("Too many iterations in routine jacobi");
+  //nrerror("Too many iterations in routine jacobi");
 }
 #undef ROTATE
 #undef NRANSI

@@ -68,12 +68,15 @@ bool KyGeoICP::GetRigidTM(Eigen::Matrix4d& tm, const int& iter, const double& to
 		}
 
 		m_RigidTM = tm*m_RigidTM;
-		if (KyIsZero(error1, tol)) {
-			improved = true;
+		
+		//if (KyIsZero(error1, tol)) {
+		if (fabs(error1) < tol){
+		improved = true;
 			error0 = error1;
 			break;
 		}
-		if (KyIsLE(error1, error0, tol)) { // not improved
+		//if (KyIsLE(error1, error0, tol)) { // not improved
+		if( (error1 - error0) <=tol ){
 			improved = true;
 		}
 		error0 = error1;
@@ -90,13 +93,13 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 { 
 	Eigen::Matrix4d tm;
 	//tm.MakeIdentity();
-	tm.Identity();
+	tm.setIdentity();
 	int count = (int)m_Source.size();
 	if(count == 0)
 		return tm;
 
 	Eigen::Vector3d sCp, tCp;
-	sCp = tCp = KY_ORIGIN;
+	//sCp = tCp = KY_ORIGIN;
 	sCp = tCp = { 0,0,0 };
 	int i;
 	for (i = 0; i < count; i++) {
@@ -109,7 +112,8 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 
 	// -- if only one point, stop right here
 	if (count == 1)	{
-		tm.SetT(tCp - sCp);
+		//tm.SetT(tCp - sCp);
+		tm.block<3, 1>(0, 3) = (tCp - sCp);
 		return tm;
 	}
 
@@ -200,9 +204,11 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
      
 		Eigen::Vector3d ds = s1 - s0;
 		Eigen::Vector3d dt = t1 - t0;
-		double rs = ds.Size();
-		double rt = dt.Size();
-		
+		//double rs = ds.Size();
+		//double rt = dt.Size();
+		double rs = KyMath::Dist(ds, { 0,0,0 });
+		double rt = KyMath::Dist(dt, { 0,0,0 });
+
 		ds.normalized();
 		dt.normalized();
 
@@ -218,7 +224,8 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 
 		// construct quaternion
 		w = cos(theta/2);
-		if (!KyIsZero(r)) {
+		//if (!KyIsZero(r)) {
+		if(!(fabs(r)<1.0E-6)){
 			r = sin(theta/2)/r;
 			x = x*r;
 			y = y*r;
@@ -227,9 +234,9 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 			// rotate around a vector perpendicular to ds
 			//vtkMath::Perpendiculars(ds,dt,0,0);
 			r = sin(theta/2);
-			x = dt.x*r;
-			y = dt.y*r;
-			z = dt.z*r;
+			x = dt.x()*r;
+			y = dt.y()*r;
+			z = dt.z()*r;
 		}
 	} else { // points are not collinear
 		w = eigenvectors[0][0];
@@ -252,17 +259,24 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 	double yz = y*z;
 
 	Eigen::Vector3d rx, ry, rz;
-	rx.Set(ww + xx - yy - zz, 2.0*(wz + xy), 2.0*(-wy + xz));
-    ry.Set(2.0*(-wz + xy), ww - xx + yy - zz, 2.0*(wx + yz));
-	rz.Set(2.0*(wy + xz), 2.0*(-wx + yz), ww - xx - yy + zz);
-
-	tm.SetX(rx);
-	tm.SetY(ry);
-	tm.SetZ(rz);
-
+	//rx.Set(ww + xx - yy - zz, 2.0 * (wz + xy), 2.0 * (-wy + xz));
+    //ry.Set(2.0*(-wz + xy), ww - xx + yy - zz, 2.0*(wx + yz));
+	//rz.Set(2.0*(wy + xz), 2.0*(-wx + yz), ww - xx - yy + zz);
+	rx = { ww + xx - yy - zz, 2.0 * (wz + xy), 2.0 * (-wy + xz) };
+	ry = { 2.0 * (-wz + xy), ww - xx + yy - zz, 2.0 * (wx + yz) };
+	rz = { 2.0 * (wy + xz), 2.0 * (-wx + yz), ww - xx - yy + zz };
+	
+	//tm.SetX(rx);
+	//tm.SetY(ry);
+	//tm.SetZ(rz);
+	tm.setIdentity();
+	tm.block<3, 1>(0, 0) = rx;
+	tm.block<3, 1>(0, 1) = ry;
+	tm.block<3, 1>(0, 2) = rz;
 	// the translation is given by the difference in the transformed source
 	// centroid and the target centroid
-	tm.SetT(tCp - tm*sCp);
+	//tm.SetT(tCp - tm*sCp);
+	tm.block<3, 1>(0, 3) = tCp - tm * sCp;
 
 	return tm;
 }
@@ -274,9 +288,9 @@ void KyGeoICP::Perpendiculars(const Eigen::Vector3d& v0,
 	Eigen::Vector3d& v1, Eigen::Vector3d& v2, double& theta) const
 {
 	int dx, dy, dz;
-	double x2 = v0.x*v0.x;
-	double y2 = v0.y*v0.y;
-	double z2 = v0.z*v0.z;
+	double x2 = v0.x() * v0.x();
+	double y2 = v0.y() * v0.y();
+	double z2 = v0.z() * v0.z();
 	double r = sqrt(x2 + y2 + z2);
 
 	// transpose the vector to avoid divide-by-zero error
@@ -294,7 +308,8 @@ void KyGeoICP::Perpendiculars(const Eigen::Vector3d& v0,
 
 	double tmp = sqrt(a*a+c*c);
 
-	if ( KyIsNotZero(theta) ) {
+	//if ( KyIsNotZero(theta) ) {
+	if ( fabs(theta) >= 1.0E-6) {
 		double sintheta = sin(theta);
 		double costheta = cos(theta);
 		if (&v1) {
