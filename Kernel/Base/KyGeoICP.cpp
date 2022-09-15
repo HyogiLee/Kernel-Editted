@@ -50,7 +50,7 @@ bool KyGeoICP::GetRigidTM(Eigen::Matrix4d& tm, const int& iter, const double& to
 	double error0 = EstiError(errorMetric); // previous error
 	double error1 = 0; // current error
 	bool improved = false;
-	m_RigidTM.MakeIdentity();
+	//m_RigidTM.MakeIdentity();
 	m_RigidTM.Identity();
 	for (int i = 0; i < iter; i++) {
 		tm.MakeIdentity();
