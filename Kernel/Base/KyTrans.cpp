@@ -852,7 +852,7 @@ Eigen::Matrix4d KyTrans::GetMatrix3PtsCoord(Eigen::Vector3d ptOrg, Eigen::Vector
 	//vY = vZ.Cross(vX);
 	vX = (ptX - ptOrg).normalized();
 	vY = (ptXY - ptOrg).normalized();
-	vZ = vX.cross(vY).normalized();
+	vZ = (vX.cross(vY)).normalized();
 	vY = vZ.cross(vX);
 
 

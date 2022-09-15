@@ -73,7 +73,7 @@ public:
 	Eigen::Matrix4d MovePtsNtoMRemoveLargeError(std::vector<Eigen::Vector3d>& ptsSource, std::vector<Eigen::Vector3d>& ptsTarget, double vRMSTol, int nMaxDelete, bool bDeleteUniform);
 	void DeleteMaxRMSPoint(std::vector<Eigen::Vector3d>& ptsDeleted, double vUniformTol, double vRMSTol, bool bDeleteUniform);
 
-	//ÃÊ±â°ªÀ» Áß½É»Ó¸¸ ¾Æ´Ï¶ó Ãß°¡·Î 8°÷À» ´õ ÀÌµ¿½ÃÄÑ °¡¸é¼­ ÃÖÀû À§Ä¡¸¦ Ã£À½
+	//ï¿½Ê±â°ªï¿½ï¿½ ï¿½ß½É»Ó¸ï¿½ ï¿½Æ´Ï¶ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ 8ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½é¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ Ã£ï¿½ï¿½
 	Eigen::Matrix4d MovePtsNtoMUsingMultiInitPosition(std::vector<Eigen::Vector3d>& ptsSource, std::vector<Eigen::Vector3d>& ptsTarget, double& vResultRMS, int& nResultMatchedPts, int nMinPts=5, double vAllowedRMS=5, double vAllowedDist = 10, bool bSrcMove = true);
 	Eigen::Matrix4d MovePtsNtoMUsingMultiInitPosition(double px, double py, double pz, std::vector<Eigen::Vector3d>& ptsSource, std::vector<Eigen::Vector3d>& ptsTarget, double vAllowedDist, int nMinPt, double& vRMS, int& nMatchedPts);
 	void FindClosestPts(std::vector<Eigen::Vector3d>& ptsSource0, std::vector<Eigen::Vector3d>& ptsTarget0, std::vector<Eigen::Vector3d>& ptsSource, std::vector<Eigen::Vector3d>& ptsTarget, double vAllowedDist);

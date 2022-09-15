@@ -8,15 +8,15 @@
 class KyGeoICP {
 public:
 	// Specify the source and target data sets.
-	void SetSource(const KyP3Ds& source);
-	void SetTarget(const KyP3Ds& target);
-	void Set(const KyP3Ds& source, const KyP3Ds& target);
+	void SetSource(const std::vector<Eigen::Vector3d>& source);
+	void SetTarget(const std::vector<Eigen::Vector3d>& target);
+	void Set(const std::vector<Eigen::Vector3d>& source, const std::vector<Eigen::Vector3d>& target);
 
 	// Get a rigid transformation matrix
 	//	- an iterative closest points algorithm
-	bool GetRigidTM(KyTMatrix& tm, const int& iter = 50, const double& tol = 0.01, bool errorMetric = true,bool bMappingFixX=false,bool bMappingFixY=false,bool bMappingFixZ=false);
+	bool GetRigidTM(Eigen::Matrix4d& tm, const int& iter = 50, const double& tol = 0.01, bool errorMetric = true,bool bMappingFixX=false,bool bMappingFixY=false,bool bMappingFixZ=false);
 
-	const KyTMatrix& GetRigidTM() { return m_RigidTM; }
+	const Eigen::Matrix4d& GetRigidTM() { return m_RigidTM; }
 
 	double GetError() const { return m_Error; }
 protected:
@@ -24,14 +24,14 @@ protected:
 	void PreProcess();
 	// Calc. translation t and rotation R 
 	//		that minimizes the sum of the squared error
-	KyTMatrix CalcRigidTM(bool bMappingFixX = false, bool bMappingFixY = false, bool bMappingFixZ = false) const;
+	Eigen::Matrix4d  CalcRigidTM(bool bMappingFixX = false, bool bMappingFixY = false, bool bMappingFixZ = false) const;
 	// Transform a source points set 
 	// using a rigid transformation matrix
-	bool TransformSource(const KyTMatrix& tm);
+	bool TransformSource(const Eigen::Matrix4d& tm);
 	// Find unit vectors 
 	// which is perpendicular to this on and to each other.
-	void Perpendiculars(const KyV3D& v0, 
-						KyV3D& v1, KyV3D& v2, double& theta) const;
+	void Perpendiculars(const Eigen::Vector3d& v0,
+		Eigen::Vector3d& v1, Eigen::Vector3d& v2, double& theta) const;
 	
 	double EstiError(bool mode =  true);
 public:
@@ -39,9 +39,9 @@ public:
 	~KyGeoICP();
 
 private:
-	KyP3Ds m_Source;
-	KyP3Ds m_Target;
+	std::vector<Eigen::Vector3d> m_Source;
+	std::vector<Eigen::Vector3d> m_Target;
 	double m_Error;
 
-	KyTMatrix m_RigidTM;
+	Eigen::Matrix4d  m_RigidTM;
 };
