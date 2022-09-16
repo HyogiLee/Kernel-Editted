@@ -1,8 +1,7 @@
 #include "KyTrans.h"
 #include "KyMatching.h"
 #include "KyPrimFit.h"
-#include "KyMath.h"
-#include "V3D.h" 
+//#include "V3D.h" 
 
 #define OFFSET_ORG 139.96
 #define OFFSET_BLOCK 600.37
@@ -25,8 +24,8 @@ KyTrans::~KyTrans(void)
 
 void KyTrans::UpdatePoint(std::vector<Eigen::Vector3d>& pts, Eigen::Matrix4d& tMat)
 {
+	Eigen::Matrix3d R = tMat.block<3, 3>(0, 0);
 	for (size_t i = 0; i < pts.size(); i++) {
-		Eigen::Matrix3d R = tMat.block<3, 3>(0, 0);
 		//pts[i] = tMat * pts[i];
 		pts[i] = R * pts[i];
 	}
@@ -34,8 +33,8 @@ void KyTrans::UpdatePoint(std::vector<Eigen::Vector3d>& pts, Eigen::Matrix4d& tM
 
 void KyTrans::UpdatePoint(std::vector<Eigen::Vector3f>& pts, Eigen::Matrix4f& tMat)
 {
+	Eigen::Matrix3f R = tMat.block<3, 3>(0, 0);
 	for (size_t i = 0; i < pts.size(); i++) {
-		Eigen::Matrix3d R = tMat.block<3, 3>(0, 0);
 		//pts[i] = tMat * pts[i];
 		pts[i] = R * pts[i];
 	}
@@ -64,6 +63,8 @@ Eigen::Matrix4d KyTrans::MovePtsNtoN(std::vector<Eigen::Vector3d>& source, std::
 		Eigen::Matrix3d R = m_tMat.block<3, 3>(0, 0);
 		//pts[i] = tMat * pts[i];
 		newSource[i] = R * source[i];
+		//Eigen::Vector3d TranslationVec = m_tMat.block<3, 1>(0, 3);
+		//newSource[i] -= TranslationVec;
 	}
 
 	if(bSrcMove)
@@ -287,9 +288,11 @@ Eigen::Matrix4d KyTrans::MovePtsNtoMUsingMultiInitPosition(std::vector<Eigen::Ve
 					if (i == 6 && px == 90 && py == 225 && pz == 135)
 						int a = 10;
 					//�߽��̵�
-					tMat.Identity();
+					tMat.setIdentity();
 					//tMat.Translate(ptTagetCenter - ptsRefOrg[i]);
-					tMat = tMat * (ptTagetCenter - ptsRefOrg[i]);
+					//tMat = tMat * (ptTagetCenter - ptsRefOrg[i]);
+					Eigen::Vector3d temp = ptTagetCenter - ptsRefOrg[i];
+					tMat.block<3, 3>(0, 0) <<temp.x(),0,0,0,temp.y(),0,0,0,temp.z();
 					std::vector<Eigen::Vector3d> pts = ptsSource;
 					KyTrans::MovePts(tMat, pts);
 
@@ -489,7 +492,7 @@ void KyTrans::GetReferenceCenter(std::vector<Eigen::Vector3d>& ptsSource, std::v
 Eigen::Matrix4d KyTrans::MovePtsNtoM(std::vector<Eigen::Vector3d>& ptsSource, std::vector<Eigen::Vector3d>& ptsTarget,double vMatchingError,bool bSrcMove, bool bOnlyRotateZ)
 {
 	//m_tMat.MakeIdentity();
-	m_tMat = Eigen::Vector4d::Identity();
+	m_tMat.setIdentity();
 	if(ptsSource.size() < 1 || ptsTarget.size() < 1)
 		return m_tMat;
 
@@ -591,7 +594,7 @@ Eigen::Matrix4d KyTrans::GetMatrixPtsToXYPlane(Eigen::Vector3d vPlaneNor, Eigen:
 	Eigen::Affine3d rz = Eigen::Affine3d(Eigen::AngleAxisd(KyMath::Radian(xAng), Eigen::Vector3d(0, 0, 1)));
 	Eigen::Affine3d r = ry * rz;
 	Eigen::Matrix4d tRot = r.matrix();
-	vPlaneNor = tRot * vPlaneNor;
+	vPlaneNor = tRot.block<3,3>(0,0) * vPlaneNor;
 	//3. ���� �̵�
 	//transM.SetT(-ptOrg);
 	//rotX.RotateX(xAng);
@@ -658,7 +661,7 @@ Eigen::Matrix4d KyTrans::MoveToZAxis(Eigen::Vector3d vPlaneNor, Eigen::Vector3d 
 	Eigen::Affine3d rx = Eigen::Affine3d(Eigen::AngleAxisd(KyMath::Radian(xAng), Eigen::Vector3d(1, 0, 0)));
 	Eigen::Affine3d r = ry * rx;
 	Eigen::Matrix4d tRot = r.matrix();
-	vPlaneNor = tRot * vPlaneNor;
+	vPlaneNor = tRot.block<3, 3>(0, 0) * vPlaneNor;
 
 	//3. ���� �̵�
 	//transM.SetT(-ptOrg);
@@ -675,7 +678,7 @@ Eigen::Matrix4d KyTrans::MoveToXZAxis(Eigen::Vector3d ptOrg, Eigen::Vector3d vX,
 {
 	Eigen::Matrix4d tMatZAxis = MoveToZAxis(vZ, ptOrg);
 
-	Eigen::Vector3d ptZ = tMatZAxis * (ptOrg + vZ);
+	Eigen::Vector3d ptZ = tMatZAxis.block<3, 3>(0, 0) * (ptOrg + vZ);
 	if (ptZ.z() < 0)
 	{
 		//Eigen::Matrix4d rotX;
@@ -685,7 +688,7 @@ Eigen::Matrix4d KyTrans::MoveToXZAxis(Eigen::Vector3d ptOrg, Eigen::Vector3d vX,
 			Eigen::Affine3d(Eigen::AngleAxisd(M_PI, Eigen::Vector3d(1, 0, 0)));
 		tMatZAxis = rx.matrix() * tMatZAxis;
 	}
-	Eigen::Vector3d ptX = tMatZAxis * (ptOrg + vX);
+	Eigen::Vector3d ptX = tMatZAxis.block<3, 3>(0, 0) * (ptOrg + vX);
 	double vAng = -atan2(ptX.y(), ptX.x());
 	//Eigen::Matrix4d rotZ;
 	//rotZ.RotateZ(vAng);
@@ -771,7 +774,7 @@ Eigen::Matrix4d KyTrans::MovePtsBy5PtsCord(std::vector<Eigen::Vector3d> ptsCord,
 	Eigen::Matrix4d tMat = MovePtsBy3PtsCord(ptOrg,ptX,ptXY);
 
 	//
-	Eigen::Vector3d ptNewX = tMat*pt2;
+	Eigen::Vector3d ptNewX = tMat.block<3, 3>(0, 0) *pt2;
 	Eigen::Matrix4d tRotZ;
 	if(ptNewX.x() < 0.)
 	{
@@ -911,7 +914,7 @@ Eigen::Matrix4d KyTrans::MovePtsBy3PtsCord(Eigen::Vector3d ptOrg, Eigen::Vector3
 	tMat = tMatXAxis*tMatOrg*tMatXYPlane;
 	
 	//4. Y���� -�� ��� +�� ����
-	Eigen::Vector3d ptY = tMat*ptXY;
+	Eigen::Vector3d ptY = tMat.block<3, 3>(0, 0) *ptXY;
 	Eigen::Matrix4d tRotX;
 	if(ptY.y() < 0.)
 	{
@@ -951,7 +954,7 @@ Eigen::Matrix4d KyTrans::MovePtsBy3PtsCordPipe(Eigen::Vector3d ptOrg, Eigen::Vec
 	tMat = tMatXAxis*tMatOrg*tMatXYPlane;
 
 	//4. Y���� +�� ��� -�� ����
-	Eigen::Vector3d ptY = tMat*ptXY;
+	Eigen::Vector3d ptY = tMat.block<3, 3>(0, 0) *ptXY;
 
 	Eigen::Matrix4d tRotX;
 	if(ptY.y() > 0.)
@@ -975,7 +978,8 @@ Eigen::Matrix4d KyTrans::MovePtsBy4Pts(Eigen::Vector3d ptSt1, Eigen::Vector3d pt
 	Eigen::Affine3d t(Eigen::Translation3d(-(ptSt2 - ptSt1)));
 	tMatOrg = t.matrix();
 
-	ptSt2 = tMatOrg*ptSt2; ptEd2 = tMatOrg*ptEd2;
+	ptSt2 = tMatOrg.block<3, 3>(0, 0) *ptSt2;
+	ptEd2 = tMatOrg.block<3, 3>(0, 0) *ptEd2;
 
 	//z�� ȸ��
 	double ang1,ang2,ang;
@@ -986,8 +990,8 @@ Eigen::Matrix4d KyTrans::MovePtsBy4Pts(Eigen::Vector3d ptSt1, Eigen::Vector3d pt
 	Eigen::Affine3d rz = Eigen::Affine3d(Eigen::AngleAxisd(KyMath::Radian(ang), ptSt1));
 	tMatZ = rz.matrix();
 
-	ptSt2 = tMatZ*ptSt2;
-	ptEd2 = tMatZ*ptEd2;
+	ptSt2 = tMatZ.block<3, 3>(0, 0) *ptSt2;
+	ptEd2 = tMatZ.block<3, 3>(0, 0) *ptEd2;
 
 	//y�� ȸ��
 	ang1 = atan2(ptSt1.x() -ptEd1.x(),ptSt1.z() -ptEd1.z());
@@ -997,7 +1001,8 @@ Eigen::Matrix4d KyTrans::MovePtsBy4Pts(Eigen::Vector3d ptSt1, Eigen::Vector3d pt
 	Eigen::Affine3d ry = Eigen::Affine3d(Eigen::AngleAxisd(KyMath::Radian(ang), ptSt1));
 	tMatY = ry.matrix();
 
-	ptSt2 = tMatY*ptSt2; ptEd2 = tMatY*ptEd2;
+	ptSt2 = tMatY.block<3, 3>(0, 0) *ptSt2; 
+	ptEd2 = tMatY.block<3, 3>(0, 0) *ptEd2;
 
 	//x�� ȸ��
 	ang1 = atan2(ptSt1.z() -ptEd1.z(),ptSt1.y() -ptEd1.y());
@@ -1008,7 +1013,8 @@ Eigen::Matrix4d KyTrans::MovePtsBy4Pts(Eigen::Vector3d ptSt1, Eigen::Vector3d pt
 	tMatY = rx.matrix();
 
 
-	ptSt2 = tMatX*ptSt2; ptEd2 = tMatX*ptEd2;
+	ptSt2 = tMatX.block<3, 3>(0, 0) *ptSt2;
+	ptEd2 = tMatX.block<3, 3>(0, 0) *ptEd2;
 
 	tMat = tMatX*tMatY*tMatZ*tMatOrg;
 
@@ -1110,7 +1116,7 @@ void KyTrans::MovePts(Eigen::Matrix4d tMat, std::vector<std::vector<Eigen::Vecto
 }
 
 
-void KyTrans::MovePts(Eigen::Matrix4d tMat, std::vector<Eigen::Vector3f>& arrPts)
+void KyTrans::MovePts(Eigen::Matrix4f tMat, std::vector<Eigen::Vector3f>& arrPts)
 {
 	for (size_t i = 0; i < arrPts.size(); i++)
 	{
@@ -1144,8 +1150,8 @@ Eigen::Matrix4d KyTrans::GetMatrixToPipeForH(Eigen::Vector3d Pt1, Eigen::Vector3
 		return tMat;
 	}
 
-	ptX = tMat * ptX;
-	ptZ = tMat * ptZ;
+	ptX = tMat.block<3, 3>(0, 0) * ptX;
+	ptZ = tMat.block<3, 3>(0, 0) * ptZ;
 	if(ptZ.y() < 0.0)
 	{
 		//Eigen::Matrix4d tRot;
@@ -1171,10 +1177,10 @@ Eigen::Matrix4d KyTrans::GetMatrixToPipeForB(Eigen::Vector3d Pt1, Eigen::Vector3
 
 	Eigen::Matrix4d tMat = GetMatrixToPipeForH(Pt1,ptNor1,Pt2,ptNor2,vLen1,vLen2);
 
-	Pt1   = tMat * Pt1;
-	Pt1_2 = tMat * Pt1_2;
-	Pt2   = tMat * Pt2;
-	Pt2_2 = tMat * Pt2_2;
+	Pt1   = tMat.block<3, 3>(0, 0) * Pt1;
+	Pt1_2 = tMat.block<3, 3>(0, 0) * Pt1_2;
+	Pt2   = tMat.block<3, 3>(0, 0) * Pt2;
+	Pt2_2 = tMat.block<3, 3>(0, 0) * Pt2_2;
 
 	double dAng = M_PI/180 * 0.001;
 	Eigen::Matrix4d tRot;
@@ -1198,8 +1204,8 @@ Eigen::Matrix4d KyTrans::GetMatrixToPipeForB(Eigen::Vector3d Pt1, Eigen::Vector3
 
 		nCnt++;
 
-		Pt2   = tRot * Pt2;
-		Pt2_2 = tRot * Pt2_2;
+		Pt2   = tRot.block<3, 3>(0, 0) * Pt2;
+		Pt2_2 = tRot.block<3, 3>(0, 0) * Pt2_2;
 	} while (1);
 
 	//tRot.MakeIdentity();
@@ -1211,8 +1217,8 @@ Eigen::Matrix4d KyTrans::GetMatrixToPipeForB(Eigen::Vector3d Pt1, Eigen::Vector3
 
 	tMat  = tRot * tMat;
 
-	iPt2   = tMat * iPt2;
-	iPt2_2 = tMat * iPt2_2;
+	iPt2   = tMat.block<3, 3>(0, 0) * iPt2;
+	iPt2_2 = tMat.block<3, 3>(0, 0) * iPt2_2;
 	return tMat;
 }
 

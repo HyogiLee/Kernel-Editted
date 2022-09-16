@@ -111,6 +111,6 @@ public:
 
 public:
 	static void MovePts(Eigen::Matrix4d tMat, std::vector<Eigen::Vector3d>& arrPts);
-	static void MovePts(Eigen::Matrix4d tMat, std::vector<Eigen::Vector3f>& arrPts);
+	static void MovePts(Eigen::Matrix4f tMat, std::vector<Eigen::Vector3f>& arrPts);
 	static void MovePts(Eigen::Matrix4d tMat, std::vector<std::vector<Eigen::Vector3d>>& arrPtss);
 };

@@ -1,5 +1,6 @@
 #include <math.h>
 #include "KyMatching.h"
+#include "KyMUtil.h"
 //#include <KyBase/KyMatching.h>
 
 #ifdef _DEBUG
@@ -966,10 +967,14 @@ double find_motion(double **bData,int nB,double **mRotatedData,int nM)
     
     Calc_Q(Q_Matrix,Covariance);
     
-    for(i=0;i<4;i++) 
-      for(j=0;j<4;j++) 
-	InputA[i+1][j+1] = Q_Matrix[i][j];
-    
+	for (i = 0; i < 4; i++) {
+		for (j = 0; j < 4; j++) {
+			InputA[i + 1][j + 1] = Q_Matrix[i][j];
+		}
+	}
+
+	//nrot = KyMUtil::Jacobi(InputA, 4, d, v);
+
     jacobi(InputA,4,d,v,&nrot);
     eigsrt(d,v,4);
     
@@ -1626,7 +1631,7 @@ void eigsrt(double d[5], double v[5][5], int n)
 }
 
 #define NRANSI
-//#include <KyBase/KyNrutil.h>
+#include <Kernel/Base/KyNrutil.h>
 #define ROTATE(a,i,j,k,l) g=a[i][j];h=a[k][l];a[i][j]=g-s*(h+g*tau);\
 	a[k][l]=h+s*(g-h*tau);
 
@@ -1637,11 +1642,17 @@ void jacobi(double a[5][5], int n, double d[5], double v[5][5], int *nrot)
   //double * b, * z;
   //b=vector(1,n);
   //z=vector(1,n);
-  Eigen::VectorXd b(1, n);
-  Eigen::VectorXd z(1, n);
+  double b[5];
+  double z[5];
+  //Eigen::Vector4d b = Eigen::Vector4d::Ones();
+  //Eigen::Vector4d z = Eigen::Vector4d::Ones();
+  //Eigen::Vector4d z(1, n);
   for (ip=1;ip<=n;ip++) {
-    for (iq=1;iq<=n;iq++) v[ip][iq]=0.0;
-    v[ip][ip]=1.0;
+	  for (iq = 1; iq <= n; iq++) {
+		  v[ip][iq] = 0.0;
+		  v[ip][ip] = 1.0;
+	  }	
+		
   }
   for (ip=1;ip<=n;ip++) {
     b[ip]=d[ip]=a[ip][ip];
