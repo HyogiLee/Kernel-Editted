@@ -270,25 +270,23 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 	//tm.SetY(ry);
 	//tm.SetZ(rz);
 	tm.setIdentity();
-		
-
-	tm.block<3, 1>(0, 0) = rx;
-	tm.block<3, 1>(0, 1) = ry;
-	tm.block<3, 1>(0, 2) = rz;
-
-	/*tm.block<1, 3>(0, 0) = rx;
-	tm.block<1, 3>(1, 0) = ry;
-	tm.block<1, 3>(2, 0) = rz;
-	*/Eigen::Matrix3d R;
+	//tm.block<3, 1>(0, 0) = rx;
+	//tm.block<3, 1>(0, 1) = ry;
+	//tm.block<3, 1>(0, 2) = rz;
+	Eigen::Matrix3d R;
+	//R.block<1, 3>(0, 0) = rx;
+	//R.block<1, 3>(1, 0) = ry;
+	//R.block<1, 3>(2, 0) = rz;
+	
 	R.block<3, 1>(0, 0) = rx;
 	R.block<3, 1>(0, 1) = ry;
 	R.block<3, 1>(0, 2) = rz;
+	tm.block<3, 3>(0, 0) = R;
 	// the translation is given by the difference in the transformed source
 	// centroid and the target centroid
 	//tm.SetT(tCp - tm*sCp);
-	//tm.block<3, 1>(0, 3) = (tCp - R * sCp);
-	Eigen::Vector3d sadfa = tCp - R * sCp;
 	tm.block<3, 1>(0, 3) = (tCp - R * sCp);
+	//tm.block<1, 3>(3, 0) = (tCp - R * sCp);
 
 	return tm;
 }
@@ -357,10 +355,11 @@ bool KyGeoICP::TransformSource(const Eigen::Matrix4d& tm)
 	std::vector<Eigen::Vector3d>::iterator sit;
 	Eigen::Matrix3d R = tm.block<3, 3>(0, 0);
 	Eigen::Vector3d T = tm.block<3, 1>(0, 3);
+	//Eigen::Vector3d T = tm.block<1, 3>(3, 0);
 	for (sit = m_Source.begin(); sit != m_Source.end(); sit++) {		
 		//(*sit) =  tm*(*sit);
 		(*sit) = R * (*sit);
-		(*sit) -= T;
+		(*sit) += T;
 	}
 	return true;
 }

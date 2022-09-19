@@ -63,8 +63,8 @@ Eigen::Matrix4d KyTrans::MovePtsNtoN(std::vector<Eigen::Vector3d>& source, std::
 		Eigen::Matrix3d R = m_tMat.block<3, 3>(0, 0);
 		//pts[i] = tMat * pts[i];
 		newSource[i] = R * source[i];
-		//Eigen::Vector3d TranslationVec = m_tMat.block<3, 1>(0, 3);
-		//newSource[i] -= TranslationVec;
+		Eigen::Vector3d TranslationVec = m_tMat.block<3, 1>(0, 3);
+		newSource[i] += TranslationVec;
 	}
 
 	if(bSrcMove)
@@ -83,7 +83,7 @@ Eigen::Matrix4d KyTrans::MovePtsNtoN(std::vector<Eigen::Vector3d>& source, std::
 	}
 	m_vRmsError /= source.size();
 	m_vRmsError = std::sqrt(m_vRmsError);
-
+	/*Translation Matrix*/
 	return m_tMat;
 }
 
