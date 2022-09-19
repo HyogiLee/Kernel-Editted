@@ -84,6 +84,7 @@ Eigen::Matrix4d KyTrans::MovePtsNtoN(std::vector<Eigen::Vector3d>& source, std::
 	m_vRmsError /= source.size();
 	m_vRmsError = std::sqrt(m_vRmsError);
 	/*Translation Matrix*/
+	
 	return m_tMat;
 }
 

@@ -277,7 +277,6 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 	//R.block<1, 3>(0, 0) = rx;
 	//R.block<1, 3>(1, 0) = ry;
 	//R.block<1, 3>(2, 0) = rz;
-	
 	R.block<3, 1>(0, 0) = rx;
 	R.block<3, 1>(0, 1) = ry;
 	R.block<3, 1>(0, 2) = rz;
@@ -287,7 +286,6 @@ Eigen::Matrix4d KyGeoICP::CalcRigidTM(bool bMappingFixX/* = false*/,	bool bMappi
 	//tm.SetT(tCp - tm*sCp);
 	tm.block<3, 1>(0, 3) = (tCp - R * sCp);
 	//tm.block<1, 3>(3, 0) = (tCp - R * sCp);
-
 	return tm;
 }
 
@@ -361,6 +359,12 @@ bool KyGeoICP::TransformSource(const Eigen::Matrix4d& tm)
 		(*sit) = R * (*sit);
 		(*sit) += T;
 	}
+	//m_Source 잘 이동했음.
+	//open3d::geometry::PointCloud pcd;
+	//for (auto pt : m_Source) {
+	//	pcd.points_.push_back(pt);
+	//}
+	//open3d::io::WritePointCloudToPCD("D:\\Test.pcd", pcd, true);
 	return true;
 }
 
